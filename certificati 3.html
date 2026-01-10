@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>CRI • Generatore Certificati & Attitudinali</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --cri-red:       #c8102e;
+            --cri-red-dark:  #a00d24;
+            --bg:            #0a0e17;
+            --surface:       #111827;
+            --surface-alt:   #1e293b;
+            --text:          #f1f5f9;
+            --text-muted:    #94a3b8;
+            --border:        #334155;
+            --glow:          rgba(200, 16, 46, 0.18);
+            --selected-bg:   rgba(200, 16, 46, 0.16);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 15% 50%, var(--glow) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, var(--glow) 0%, transparent 30%);
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(200,16,46,0.3);
+        }
+
+        .logo-title {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+
+        .logo {
+            width: 64px;
+            height: 64px;
+            filter: drop-shadow(0 0 8px rgba(200,16,46,0.5));
+        }
+
+        h1 {
+            color: var(--cri-red);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.1rem;
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 10px rgba(200,16,46,0.4);
+        }
+
+        .by {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: rgba(17,24,39,0.6);
+            padding: 0.5rem;
+            border-radius: 12px;
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 500;
+            letter-spacing: 0.8px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.25s;
+        }
+
+        .tab-btn.active,
+        .tab-btn:hover {
+            background: var(--cri-red);
+            color: white;
+            box-shadow: 0 0 15px rgba(200,16,46,0.45);
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 1.8rem 2rem;
+            margin-bottom: 1.8rem;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(6px);
+            box-shadow: 
+                0 8px 32px rgba(0,0,0,0.4),
+                inset 0 0 0 1px rgba(200,16,46,0.08);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+        }
+
+        .form-group {
+            margin-bottom: 1.6rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.6rem;
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.9rem 1.1rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: rgba(15,23,42,0.6);
+            color: var(--text);
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--cri-red);
+            box-shadow: 0 0 0 3px rgba(200,16,46,0.25);
+        }
+
+        textarea {
+            min-height: 140px;
+            resize: vertical;
+        }
+
+        .add-lawyer-row {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .add-lawyer-row input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        button {
+            background: var(--cri-red);
+            color: white;
+            border: none;
+            padding: 0.9rem 1.8rem;
+            border-radius: 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 500;
+            letter-spacing: 0.8px;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        button:hover:not(:disabled) {
+            background: var(--cri-red-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(200,16,46,0.4);
+        }
+
+        button:disabled {
+            background: #4b5563;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary { background: #475569; }
+        .btn-secondary:hover { background: #64748b; }
+        .btn-danger { background: #dc2626; }
+        .btn-danger:hover { background: #b91c1c; }
+
+        .preview {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 1.6rem;
+            font-family: 'Roboto Mono', monospace;
+            white-space: pre-wrap;
+            margin-top: 1.5rem;
+            min-height: 240px;
+            line-height: 1.5;
+            font-size: 0.96rem;
+            box-shadow: inset 0 0 25px rgba(0,0,0,0.6);
+        }
+
+        small {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-top: 0.35rem;
+            display: block;
+        }
+
+        .reati-search {
+            margin-bottom: 1rem;
+        }
+
+        .reati-container {
+            max-height: 360px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.8rem;
+            background: rgba(15,23,42,0.6);
+        }
+
+        .reati-item {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            padding: 0.6rem 0.9rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .reati-item:hover {
+            background: rgba(200,16,46,0.12);
+        }
+
+        .reati-item.highlight {
+            background: rgba(200,16,46,0.25);
+        }
+
+        .reati-item.selected {
+            background: var(--selected-bg);
+            border-left: 3px solid var(--cri-red);
+        }
+
+        .reati-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--cri-red);
+            cursor: pointer;
+        }
+
+        .reati-item label {
+            cursor: pointer;
+            flex: 1;
+            white-space: normal;
+            word-break: break-word;
+            color: var(--text);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="logo-title">
+            <svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="48" fill="none" stroke="#c8102e" stroke-width="8"/>
+                <rect x="38" y="10" width="24" height="80" fill="#c8102e"/>
+                <rect x="10" y="38" width="80" height="24" fill="#c8102e"/>
+            </svg>
+            <h1>CRI GENERATORE Anamnestici/Attitudinali</h1>
+        </div>
+        <div class="by">By Tony Stark • Discord: @Damy_97</div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="certificati">CERTIFICATI</button>
+        <button class="tab-btn" data-tab="attitudinali">ATTITUDINALI</button>
+    </div>
+
+    <!-- CERTIFICATI -->
+    <div id="certificati" class="page active">
+        <div class="card">
+            <div class="form-group">
+                <label>Nome</label>
+                <input type="text" id="nomeCert" placeholder="Mario" />
+            </div>
+            <div class="form-group">
+                <label>Cognome</label>
+                <input type="text" id="cognomeCert" placeholder="Rossi" />
+            </div>
+            <div class="form-group">
+                <label>Data di nascita</label>
+                <input type="date" id="dataNascitaCert" />
+                <small>gg/mm/aaaa</small>
+            </div>
+            <div class="form-group">
+                <label>Numero di telefono</label>
+                <input type="tel" id="telefonoCert" placeholder="333 123 4567" />
+            </div>
+            <div class="form-group">
+                <label>Il tuo ID Discord (firma)</label>
+                <input type="text" id="mioDiscordIdCert" placeholder="123456789012345678" />
+            </div>
+            <div class="form-group">
+                <label>Motivazione della richiesta</label>
+                <select id="motivazioneCert">
+                    <option value="">Seleziona...</option>
+                    <option value="1">Porto d’Armi – Difesa Personale</option>
+                    <option value="2">Concorso Pubblico – Arma dei Carabinieri</option>
+                    <option value="3">Concorso Pubblico – Polizia di Stato</option>
+                    <option value="4">Concorso Pubblico – Guardia di Finanza</option>
+                    <option value="5">Idoneità Lavorativa – Croce Rossa Italiana</option>
+                    <option value="6">Idoneità Lavorativa – Vigili del Fuoco</option>
+                </select>
+            </div>
+            <div class="extra-field" id="tiroFieldCert" style="display:none;">
+                <label>Data e ora del Tiro di prova</label>
+                <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                    <div style="flex:1; min-width:180px;">
+                        <label style="font-size:0.85rem; color:#94a3b8;">Data</label>
+                        <input type="date" id="dataTiroDateCert" />
+                    </div>
+                    <div style="flex:1; min-width:180px;">
+                        <label style="font-size:0.85rem; color:#94a3b8;">Ora</label>
+                        <input type="time" id="dataTiroTimeCert" />
+                    </div>
+                </div>
+                <small>gg/mm/aaaa hh:mm</small>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Anteprima Certificato</h3>
+            <div class="preview" id="previewCert"></div>
+            <button id="copiaCertBtn" disabled>Copia negli Appunti</button>
+        </div>
+    </div>
+
+    <!-- ATTITUDINALI -->
+    <div id="attitudinali" class="page">
+        <div class="card">
+            <h3>Gestione Avvocati</h3>
+            <div class="form-group">
+                <label>Incolla qui l'albo completo da Discord</label>
+                <textarea id="alboText" rows="10" placeholder="Incolla l'intero messaggio con l'albo avvocati..."></textarea>
+            </div>
+            <div style="display:flex; gap:1rem; flex-wrap:wrap; margin:1rem 0;">
+                <button id="replaceAlboBtn">Sostituisci lista completa</button>
+                <button id="parseAlboBtn" class="btn-secondary">Aggiungi solo nuovi</button>
+                <button id="clearAlboBtn" class="btn-danger">Svuota lista</button>
+            </div>
+            <div class="form-group">
+                <label>Avvocato Difensore</label>
+                <select id="avvocatoAtt">
+                    <option value="">Seleziona avvocato...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Aggiungi manualmente</label>
+                <div class="add-lawyer-row">
+                    <input type="text" id="newAvvocatoNome" placeholder="Nome Cognome" />
+                    <input type="text" id="newAvvocatoId" placeholder="ID Discord" />
+                    <button id="addAvvocatoBtn">Aggiungi</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Generazione Messaggio Test Attitudinale</h3>
+
+            <div class="form-group">
+                <label>Nome</label>
+                <input type="text" id="nomeAtt" placeholder="Mario" />
+            </div>
+            <div class="form-group">
+                <label>Cognome</label>
+                <input type="text" id="cognomeAtt" placeholder="Rossi" />
+            </div>
+            <div class="form-group">
+                <label>Data di nascita</label>
+                <input type="date" id="dataNascitaAtt" />
+                <small>gg/mm/aaaa</small>
+            </div>
+            <div class="form-group">
+                <label>Numero di cellulare</label>
+                <input type="tel" id="telefonoAtt" placeholder="333 123 4567" />
+            </div>
+
+            <div class="form-group">
+                <label>Reati effettuati</label>
+                <input type="text" id="searchReati" class="reati-search" placeholder="Cerca reato (es. 337, truffa, rapina, 628...)" />
+                <div id="reatiContainer" class="reati-container"></div>
+                <small>I reati selezionati rimangono attivi anche con filtro</small>
+            </div>
+
+            <div class="form-group">
+                <label>Motivazione del reato</label>
+                <input type="text" id="motivazioneReato" placeholder="Bisogno di soldi..." />
+            </div>
+
+            <div class="form-group">
+                <label>Il tuo ID Discord (firma medico)</label>
+                <input type="text" id="mioDiscordIdAtt" placeholder="123456789012345678" />
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Anteprima Messaggio</h3>
+            <div class="preview" id="previewAtt"></div>
+            <button id="copiaAttBtn" disabled>Copia negli Appunti</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// =============================================
+// Tab switching
+// =============================================
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+});
+
+// =============================================
+// Shared Discord ID
+// =============================================
+const idInputCert = document.getElementById('mioDiscordIdCert');
+const idInputAtt = document.getElementById('mioDiscordIdAtt');
+
+function loadId() {
+    const saved = localStorage.getItem('cri_operator_discord_id');
+    if (saved) {
+        if (idInputCert) idInputCert.value = saved;
+        if (idInputAtt) idInputAtt.value = saved;
+    }
+}
+
+function saveId() {
+    const val = (idInputCert?.value || idInputAtt?.value || '').trim();
+    if (val) localStorage.setItem('cri_operator_discord_id', val);
+    updatePreviewCert();
+    updatePreviewAtt();
+}
+
+[idInputCert, idInputAtt].forEach(inp => inp?.addEventListener('input', saveId));
+loadId();
+
+// =============================================
+// CERTIFICATI
+// =============================================
+const certInputs = {
+    nome: document.getElementById('nomeCert'),
+    cognome: document.getElementById('cognomeCert'),
+    dataNascita: document.getElementById('dataNascitaCert'),
+    telefono: document.getElementById('telefonoCert'),
+    mioId: idInputCert,
+    motivazione: document.getElementById('motivazioneCert'),
+    dataTiroDate: document.getElementById('dataTiroDateCert'),
+    dataTiroTime: document.getElementById('dataTiroTimeCert')
+};
+
+const previewCert = document.getElementById('previewCert');
+const copiaCertBtn = document.getElementById('copiaCertBtn');
+const tiroFieldCert = document.getElementById('tiroFieldCert');
+
+certInputs.motivazione.addEventListener('change', () => {
+    const show = certInputs.motivazione.value === '1';
+    tiroFieldCert.style.display = show ? 'block' : 'none';
+    if (show && !certInputs.dataTiroDate.value) {
+        const today = new Date().toISOString().split('T')[0];
+        certInputs.dataTiroDate.value = today;
+        certInputs.dataTiroTime.value = "14:00";
+    }
+    updatePreviewCert();
+});
+
+document.querySelectorAll('#certificati input, #certificati select').forEach(el => {
+    el.addEventListener('input', updatePreviewCert);
+});
+
+function formatData(dateStr) {
+    if (!dateStr) return '[gg/mm/aaaa]';
+    const [y, m, d] = dateStr.split('-');
+    return `${d}/${m}/${y}`;
+}
+
+function formatDataTiro() {
+    const d = certInputs.dataTiroDate.value;
+    const t = certInputs.dataTiroTime.value;
+    if (!d || !t) return '[gg/mm/aaaa hh:mm]';
+    return formatData(d) + ' ' + t;
+}
+
+function updatePreviewCert() {
+    const nome = certInputs.nome.value.trim() || '[NOME]';
+    const cognome = certInputs.cognome.value.trim() || '[COGNOME]';
+    const dataN = formatData(certInputs.dataNascita.value);
+    const tel = certInputs.telefono.value.trim() || '[numero]';
+    const motVal = certInputs.motivazione.value;
+
+    const id = certInputs.mioId.value.trim();
+    const firma = id ? `<@${id}>` : '[TUO ID]';
+
+    const oggi = new Date().toLocaleDateString('it-IT', { day:'2-digit', month:'2-digit', year:'numeric' });
+
+    let motTesto = '';
+    switch(motVal) {
+        case '1': motTesto = 'Porto d’Armi – Difesa Personale'; break;
+        case '2': motTesto = 'Concorso Pubblico – Arma dei Carabinieri'; break;
+        case '3': motTesto = 'Concorso Pubblico – Polizia di Stato'; break;
+        case '4': motTesto = 'Concorso Pubblico – Guardia di Finanza'; break;
+        case '5': motTesto = 'Idoneità Lavorativa – Croce Rossa Italiana'; break;
+        case '6': motTesto = 'Idoneità Lavorativa – Vigili del Fuoco'; break;
+        default: motTesto = '[Seleziona motivazione]';
+    }
+
+    let testo = `> Nome e Cognome: ${nome} ${cognome}
+> Data di Nascita: ${dataN}
+> Numero di Telefono: ${tel}
+> Motivazione della Richiesta: ${motTesto}
+> Anamnesi (Esito della Visita): Gode di ottima salute ✅
+> Note: //`;
+
+    if (motVal === '1') {
+        testo += `\n> Data Richiesta Licenza: ${formatDataTiro()}`;
+    }
+
+    testo += `
+> Esito Certificato Medico: ✅ VALIDO
+> Data e Firma dell’Operatore: ${oggi} ${firma}`;
+
+    previewCert.textContent = testo;
+    copiaCertBtn.disabled = !motVal || (motVal === '1' && (!certInputs.dataTiroDate.value || !certInputs.dataTiroTime.value));
+}
+
+copiaCertBtn.onclick = () => {
+    navigator.clipboard.writeText(previewCert.textContent)
+        .then(() => alert('Copiato!'))
+        .catch(() => alert('Errore durante la copia'));
+};
+
+// =============================================
+// AVVOCATI
+// =============================================
+const avvocatiSelect = document.getElementById('avvocatoAtt');
+const alboTextarea = document.getElementById('alboText');
+
+function parseAvvocatiFromText(text) {
+    const avvocati = [];
+    const lines = text.split('\n');
+    let currentName = null;
+
+    for (const line of lines) {
+        if (line.includes('Nome e Cognome:')) {
+            currentName = line.split('Nome e Cognome:')[1]?.trim();
+        }
+        if (line.includes('<@') && line.includes('>') && currentName) {
+            const idMatch = line.match(/<@(\d{17,20})>/);
+            if (idMatch) {
+                avvocati.push({ nome: currentName, id: idMatch[1] });
+                currentName = null;
+            }
+        }
+    }
+    return avvocati;
+}
+
+function loadAvvocati() {
+    const saved = localStorage.getItem('cri_avvocati');
+    const list = saved ? JSON.parse(saved) : [];
+    avvocatiSelect.innerHTML = '<option value="">Seleziona avvocato...</option>';
+    list.forEach(avv => {
+        const opt = document.createElement('option');
+        opt.value = `${avv.nome}|${avv.id}`;
+        opt.textContent = avv.nome;
+        avvocatiSelect.appendChild(opt);
+    });
+}
+
+function saveAvvocati(list) {
+    localStorage.setItem('cri_avvocati', JSON.stringify(list));
+    loadAvvocati();
+}
+
+document.getElementById('replaceAlboBtn').onclick = () => {
+    const text = alboTextarea.value.trim();
+    if (!text) return alert('Incolla prima l\'albo!');
+    const nuovi = parseAvvocatiFromText(text);
+    if (nuovi.length === 0) return alert('Nessun avvocato trovato');
+    if (confirm(`Sostituire con ${nuovi.length} avvocati?`)) {
+        saveAvvocati(nuovi);
+    }
+};
+
+document.getElementById('parseAlboBtn').onclick = () => {
+    const text = alboTextarea.value.trim();
+    if (!text) return alert('Incolla qualcosa prima!');
+    const nuovi = parseAvvocatiFromText(text);
+    if (nuovi.length === 0) return alert('Nessun avvocato trovato');
+    const current = JSON.parse(localStorage.getItem('cri_avvocati') || '[]');
+    const map = new Map(current.map(a => [`${a.nome}|${a.id}`, a]));
+    nuovi.forEach(n => map.set(`${n.nome}|${n.id}`, n));
+    saveAvvocati(Array.from(map.values()));
+};
+
+document.getElementById('clearAlboBtn').onclick = () => {
+    if (confirm('Svuotare completamente la lista avvocati?')) {
+        localStorage.removeItem('cri_avvocati');
+        loadAvvocati();
+    }
+};
+
+document.getElementById('addAvvocatoBtn').onclick = () => {
+    const nome = document.getElementById('newAvvocatoNome').value.trim();
+    const id = document.getElementById('newAvvocatoId').value.trim();
+    if (nome && id && /^\d+$/.test(id)) {
+        const current = JSON.parse(localStorage.getItem('cri_avvocati') || '[]');
+        current.push({ nome, id });
+        saveAvvocati(current);
+        document.getElementById('newAvvocatoNome').value = '';
+        document.getElementById('newAvvocatoId').value = '';
+    } else {
+        alert('Inserisci nome e ID Discord valido');
+    }
+};
+
+loadAvvocati();
+
+// =============================================
+// REATI - con mantenimento selezione durante ricerca
+// =============================================
+const reatiContainer = document.getElementById('reatiContainer');
+const searchReati = document.getElementById('searchReati');
+
+const listaReati = [
+    "Art. 277 c.p. – Offesa alla libertà del Presidente della Repubblica",
+    "Art. 278 c.p. – Offesa all’onore o al prestigio del Presidente della Repubblica",
+    "Art. 322 c.p. – Istigazione alla corruzione",
+    "Art. 336 c.p. – Violenza o minaccia a un pubblico ufficiale",
+    "Art. 337 c.p. – Resistenza a un pubblico ufficiale",
+    "Art. 338 c.p. – Violenza o minaccia ad un Corpo politico, amministrativo o giudiziario o ai suoi singoli componenti",
+    "Art. 340 c.p. – Interruzione di un ufficio o servizio pubblico o di un servizio di pubblica necessità",
+    "Art. 341 bis c.p. – Oltraggio a pubblico ufficiale",
+    "Art. 342 c.p. – Oltraggio a un Corpo politico, amministrativo o giudiziario",
+    "Art. 343 c.p. – Oltraggio a un magistrato in udienza",
+    "Art. 347 c.p. – Usurpazione di funzioni pubbliche",
+    "Art. 348 c.p. – Esercizio abusivo di una professione",
+    "Art. 349 c.p. – Violazione di sigilli",
+    "Art. 378 c.p. – Favoreggiamento personale",
+    "Art. 379 c.p. – Favoreggiamento reale",
+    "Art. 385 c.p. – Evasione",
+    "Art. 386 c.p. – Procurata evasione",
+    "Art. 414 c.p. – Istigazione a delinquere",
+    "Art. 415 c.p. – Istigazione a disobbedire alle leggi",
+    "Art. 421 c.p. – Pubblica intimidazione",
+    "Art. 423 c.p. – Incendio",
+    "Art. 494 c.p. – Sostituzione di persona",
+    "Art. 495 c.p. – Falsa attestazione o dichiarazione a un pubblico ufficiale sulla identità o su qualità personali proprie o di altri",
+    "Art. 498 c.p. – Usurpazione di titoli o di onori",
+    "Art. 56 e 575 c.p. – Tentato omicidio",
+    "Art. 581 c.p. – Percosse",
+    "Art. 582 c.p. – Lesione personale",
+    "Art. 588 c.p. – Rissa",
+    "Art. 590 bis c.p. – Lesioni personali stradali gravi o gravissime",
+    "Art. 593 c.p. – Omissione di soccorso",
+    "Art. 605 c.p. – Sequestro di persona",
+    "Art. 611 c.p. – Violenza o minaccia per costringere a commettere un reato",
+    "Art. 612 c.p. – Minaccia",
+    "Art. 613 bis c.p. – Tortura",
+    "Art. 614 c.p. – Violazione di domicilio",
+    "Art. 624 c.p. – Furto",
+    "Art. 628 c.p. – Rapina",
+    "Art. 629 c.p. – Estorsione",
+    "Art. 635 c.p. – Danneggiamento",
+    "Art. 640 c.p. – Truffa",
+    "Art. 646 c.p. – Appropriazione indebita",
+    "Art. 648 c.p. – Ricettazione",
+    "Art. 648 bis c.p. – Riciclaggio",
+    "Art. 648 ter c.p. – Impiego di denaro, beni o utilità di provenienza illecita",
+    "Art. 648 ter 1 c.p. – Autoriciclaggio",
+    "Art. 651 c.p. – Rifiuto d’indicazioni sulla propria identità personale",
+    "Art. 658 c.p. – Procurato allarme presso l’Autorità",
+    "Art. 660 c.p. – Molestia o disturbo alle persone",
+    "Art. 682 c.p. – Ingresso arbitrario in luoghi, ove l’accesso è vietato nell’interesse militare dello Stato",
+    "Art. 695 c.p. – Fabbricazione o commercio non autorizzati di armi",
+    "Art. 697 c.p. – Detenzione abusiva di armi",
+    "Art. 699 c.p. – Porto abusivo di armi",
+    "Art. 703 c.p. – Accensioni ed esplosioni pericolose",
+    "Art. 707 c.p. – Possesso ingiustificato di chiavi alterate o di grimaldelli",
+    "Art. 73 TUS – Produzione, traffico e detenzione illeciti di sostanze stupefacenti ai fini di spaccio",
+    "Art. 75 TUS – Detenzione, importazione, esportazione, acquisto di sostanze stupefacenti per uso personale",
+    "Art. 18 TULPS – Organizzazione di una riunione in luogo pubblico o aperto al pubblico senza preavviso",
+    "Art. 28 TULPS – Fabbricazione, assemblaggio, raccolta, detenzione e vendita senza licenza di armi da guerra, di armi ad esse analoghe e di equipaggiamenti militari",
+    "Art. 5 L. 152/1975 – Uso di maschere, caschi protettivi, o di qualunque altro mezzo atto a rendere difficoltoso il riconoscimento della persona"
+];
+
+function renderReati(filter = '') {
+    const selected = new Set();
+    document.querySelectorAll('#reatiContainer input[type="checkbox"]:checked')
+        .forEach(cb => selected.add(cb.value));
+
+    reatiContainer.innerHTML = '';
+
+    const lowerFilter = filter.toLowerCase().trim();
+
+    const sorted = listaReati.slice().sort((a, b) => {
+        const aMatch = a.toLowerCase().includes(lowerFilter);
+        const bMatch = b.toLowerCase().includes(lowerFilter);
+        if (aMatch && !bMatch) return -1;
+        if (!aMatch && bMatch) return 1;
+        return a.localeCompare(b);
+    });
+
+    sorted.forEach(reato => {
+        const isMatch = lowerFilter && reato.toLowerCase().includes(lowerFilter);
+
+        const div = document.createElement('div');
+        div.className = 'reati-item' + (isMatch ? ' highlight' : '');
+
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.value = reato;
+        cb.id = 'r_' + reato.replace(/\W+/g, '_');
+
+        if (selected.has(reato)) {
+            cb.checked = true;
+            div.classList.add('selected');
+        }
+
+        const lbl = document.createElement('label');
+        lbl.htmlFor = cb.id;
+        lbl.textContent = reato;
+
+        div.appendChild(cb);
+        div.appendChild(lbl);
+        reatiContainer.appendChild(div);
+
+        cb.addEventListener('change', () => {
+            div.classList.toggle('selected', cb.checked);
+            updatePreviewAtt();
+        });
+    });
+}
+
+searchReati.addEventListener('input', () => renderReati(searchReati.value));
+renderReati();
+
+// =============================================
+// ATTITUDINALI PREVIEW
+// =============================================
+const attInputs = {
+    nome: document.getElementById('nomeAtt'),
+    cognome: document.getElementById('cognomeAtt'),
+    dataNascita: document.getElementById('dataNascitaAtt'),
+    telefono: document.getElementById('telefonoAtt'),
+    motivazioneReato: document.getElementById('motivazioneReato')
+};
+
+const previewAtt = document.getElementById('previewAtt');
+const copiaAttBtn = document.getElementById('copiaAttBtn');
+
+function updatePreviewAtt() {
+    const nome = attInputs.nome.value.trim() || '[NOME]';
+    const cognome = attInputs.cognome.value.trim() || '[COGNOME]';
+    const dataN = formatData(attInputs.dataNascita.value);
+    const tel = attInputs.telefono.value.trim() || '[numero]';
+
+    const selected = Array.from(reatiContainer.querySelectorAll('input:checked'))
+    .map(cb => `> - ${cb.value}`);
+
+    const reatiText = selected.length ? selected.join('\n') : '[nessun reato selezionato]';
+
+    const motivazione = attInputs.motivazioneReato.value.trim() || '[motivazione]';
+
+    const avvVal = document.getElementById('avvocatoAtt').value;
+    const avvocatoText = avvVal 
+        ? avvVal.split('|')[0].trim() + ' / <@' + avvVal.split('|')[1].trim() + '>'
+        : '[seleziona avvocato]';
+
+    const id = idInputAtt.value.trim();
+    const firma = id ? `<@${id}>` : '[TUO ID]';
+
+    const oggi = new Date().toLocaleDateString('it-IT', {day:'2-digit', month:'2-digit', year:'numeric'});
+
+    let testo = `> Nome e Cognome: ${nome} ${cognome}
+> Data di Nascita: ${dataN}
+> Numero di Cellulare: ${tel}
+> Reati Effettuati:
+${reatiText}
+> Motivazione del Reato: ${motivazione}
+> Motivazione della Richiesta: Pulizia Fedina Penale
+> Esito del Test Attitudinale: :white_check_mark: **POSITIVO**
+> Avvocato Difensore: ${avvocatoText}
+> Data e Firma del Medico: ${oggi} ${firma}`;
+
+    previewAtt.textContent = testo;
+
+    copiaAttBtn.disabled = !(nome && cognome && selected.length > 0 && avvVal);
+}
+
+copiaAttBtn.onclick = () => {
+    navigator.clipboard.writeText(previewAtt.textContent)
+        .then(() => alert('Copiato!'))
+        .catch(() => alert('Errore durante la copia'));
+};
+
+document.querySelectorAll('#attitudinali input:not(#searchReati), #attitudinali select').forEach(el => {
+    el.addEventListener('input', updatePreviewAtt);
+    el.addEventListener('change', updatePreviewAtt);
+});
+
+// Inizializzazione
+updatePreviewAtt();
+updatePreviewCert();
+</script>
+</body>
+</html>
