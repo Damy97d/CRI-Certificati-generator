@@ -285,6 +285,11 @@
             word-break: break-word;
             color: var(--text);
         }
+
+        .clear-btn-container {
+            margin-top: 1.5rem;
+            text-align: right;
+        }
     </style>
 </head>
 <body>
@@ -356,6 +361,10 @@
                     </div>
                 </div>
                 <small>gg/mm/aaaa hh:mm</small>
+            </div>
+
+            <div class="clear-btn-container">
+                <button id="clearCertBtn" class="btn-danger">Svuota Campi</button>
             </div>
         </div>
 
@@ -431,6 +440,10 @@
             <div class="form-group">
                 <label>Il tuo ID Discord (firma medico)</label>
                 <input type="text" id="mioDiscordIdAtt" placeholder="123456789012345678" />
+            </div>
+
+            <div class="clear-btn-container">
+                <button id="clearAttBtn" class="btn-danger">Svuota Campi</button>
             </div>
         </div>
 
@@ -661,7 +674,7 @@ document.getElementById('addAvvocatoBtn').onclick = () => {
 loadAvvocati();
 
 // =============================================
-// REATI - con mantenimento selezione durante ricerca
+// REATI
 // =============================================
 const reatiContainer = document.getElementById('reatiContainer');
 const searchReati = document.getElementById('searchReati');
@@ -800,7 +813,7 @@ function updatePreviewAtt() {
     const tel = attInputs.telefono.value.trim() || '[numero]';
 
     const selected = Array.from(reatiContainer.querySelectorAll('input:checked'))
-    .map(cb => `> - ${cb.value}`);
+        .map(cb => `> - ${cb.value}`);
 
     const reatiText = selected.length ? selected.join('\n') : '[nessun reato selezionato]';
 
@@ -837,6 +850,52 @@ copiaAttBtn.onclick = () => {
         .then(() => alert('Copiato!'))
         .catch(() => alert('Errore durante la copia'));
 };
+
+// =============================================
+// PULSANTI SVUOTA CAMPI
+// =============================================
+
+document.getElementById('clearCertBtn')?.addEventListener('click', () => {
+    if (!confirm('Vuoi davvero svuotare tutti i campi dei certificati?\n(L\'ID Discord verrà mantenuto)')) return;
+
+    document.getElementById('nomeCert').value = '';
+    document.getElementById('cognomeCert').value = '';
+    document.getElementById('dataNascitaCert').value = '';
+    document.getElementById('telefonoCert').value = '';
+    document.getElementById('motivazioneCert').value = '';
+    document.getElementById('dataTiroDateCert').value = '';
+    document.getElementById('dataTiroTimeCert').value = '';
+
+    tiroFieldCert.style.display = 'none';
+    updatePreviewCert();
+    alert('Campi certificati svuotati!');
+});
+
+document.getElementById('clearAttBtn')?.addEventListener('click', () => {
+    if (!confirm('Vuoi davvero svuotare tutti i campi attitudinali?\n(L\'ID Discord e la lista avvocati rimangono)')) return;
+
+    // Campi testo e date
+    document.getElementById('nomeAtt').value = '';
+    document.getElementById('cognomeAtt').value = '';
+    document.getElementById('dataNascitaAtt').value = '';
+    document.getElementById('telefonoAtt').value = '';
+    document.getElementById('motivazioneReato').value = '';
+
+    // Deseleziona checkbox + rimuove classe visuale selected
+    document.querySelectorAll('#reatiContainer .reati-item').forEach(item => {
+        const checkbox = item.querySelector('input[type="checkbox"]');
+        if (checkbox) {
+            checkbox.checked = false;
+        }
+        item.classList.remove('selected');
+    });
+
+    // Deseleziona avvocato
+    document.getElementById('avvocatoAtt').value = '';
+
+    updatePreviewAtt();
+    alert('Campi attitudinali svuotati!');
+});
 
 document.querySelectorAll('#attitudinali input:not(#searchReati), #attitudinali select').forEach(el => {
     el.addEventListener('input', updatePreviewAtt);
