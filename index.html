@@ -23,11 +23,7 @@
             --selected-bg:   rgba(200, 16, 46, 0.16);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin:0; padding:0; box-sizing:border-box; }
 
         body {
             font-family: 'Roboto Mono', monospace;
@@ -40,255 +36,220 @@
             background-attachment: fixed;
         }
 
-        .container {
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 2rem 1.5rem;
-        }
+        .container { max-width:960px; margin:0 auto; padding:2rem 1.5rem; }
 
         .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 2.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(200,16,46,0.3);
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            margin-bottom:2.5rem;
+            padding-bottom:1.5rem;
+            border-bottom:1px solid rgba(200,16,46,0.3);
         }
 
-        .logo-title {
-            display: flex;
-            align-items: center;
-            gap: 1.2rem;
-        }
+        .logo-title { display:flex; align-items:center; gap:1.2rem; }
 
         .logo {
-            width: 64px;
-            height: 64px;
+            width:64px;
+            height:64px;
             filter: drop-shadow(0 0 8px rgba(200,16,46,0.5));
         }
 
         h1 {
-            color: var(--cri-red);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2.1rem;
-            letter-spacing: 1.5px;
-            text-shadow: 0 0 10px rgba(200,16,46,0.4);
+            color:var(--cri-red);
+            font-family:'Orbitron',sans-serif;
+            font-size:2.1rem;
+            letter-spacing:1.5px;
+            text-shadow:0 0 10px rgba(200,16,46,0.4);
         }
 
-        .by {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            opacity: 0.7;
-        }
+        .by { color:var(--text-muted); font-size:0.85rem; opacity:0.7; }
 
         .tabs {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-            background: rgba(17,24,39,0.6);
-            padding: 0.5rem;
-            border-radius: 12px;
-            backdrop-filter: blur(8px);
-            border: 1px solid var(--border);
+            display:flex;
+            gap:0.5rem;
+            margin-bottom:2rem;
+            background:rgba(17,24,39,0.6);
+            padding:0.5rem;
+            border-radius:12px;
+            backdrop-filter:blur(8px);
+            border:1px solid var(--border);
         }
 
         .tab-btn {
-            flex: 1;
-            padding: 1rem;
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 500;
-            letter-spacing: 0.8px;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.25s;
+            flex:1;
+            padding:1rem;
+            background:transparent;
+            border:none;
+            color:var(--text-muted);
+            font-family:'Orbitron',sans-serif;
+            font-weight:500;
+            letter-spacing:0.8px;
+            cursor:pointer;
+            border-radius:8px;
+            transition:all 0.25s;
         }
 
         .tab-btn.active,
         .tab-btn:hover {
-            background: var(--cri-red);
-            color: white;
-            box-shadow: 0 0 15px rgba(200,16,46,0.45);
+            background:var(--cri-red);
+            color:white;
+            box-shadow:0 0 15px rgba(200,16,46,0.45);
         }
 
-        .page {
-            display: none;
-        }
-
-        .page.active {
-            display: block;
-        }
+        .page { display:none; }
+        .page.active { display:block; }
 
         .card {
-            background: var(--surface);
-            border-radius: 16px;
-            padding: 1.8rem 2rem;
-            margin-bottom: 1.8rem;
-            border: 1px solid var(--border);
-            backdrop-filter: blur(6px);
+            background:var(--surface);
+            border-radius:16px;
+            padding:1.8rem 2rem;
+            margin-bottom:1.8rem;
+            border:1px solid var(--border);
+            backdrop-filter:blur(6px);
             box-shadow: 
                 0 8px 32px rgba(0,0,0,0.4),
                 inset 0 0 0 1px rgba(200,16,46,0.08);
-            transition: transform 0.2s;
+            transition:transform 0.2s;
         }
 
-        .card:hover {
-            transform: translateY(-3px);
-        }
+        .card:hover { transform:translateY(-3px); }
 
-        .form-group {
-            margin-bottom: 1.6rem;
-        }
+        .form-group { margin-bottom:1.6rem; }
 
         label {
-            display: block;
-            margin-bottom: 0.6rem;
-            color: var(--text-muted);
-            font-size: 0.92rem;
-            font-weight: 500;
-            letter-spacing: 0.4px;
+            display:block;
+            margin-bottom:0.6rem;
+            color:var(--text-muted);
+            font-size:0.92rem;
+            font-weight:500;
+            letter-spacing:0.4px;
         }
 
         input, select, textarea {
-            width: 100%;
-            padding: 0.9rem 1.1rem;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            background: rgba(15,23,42,0.6);
-            color: var(--text);
-            font-family: 'Roboto Mono', monospace;
-            font-size: 1rem;
-            transition: all 0.2s;
+            width:100%;
+            padding:0.9rem 1.1rem;
+            border-radius:10px;
+            border:1px solid var(--border);
+            background:rgba(15,23,42,0.6);
+            color:var(--text);
+            font-family:'Roboto Mono',monospace;
+            font-size:1rem;
+            transition:all 0.2s;
         }
 
         input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--cri-red);
-            box-shadow: 0 0 0 3px rgba(200,16,46,0.25);
+            outline:none;
+            border-color:var(--cri-red);
+            box-shadow:0 0 0 3px rgba(200,16,46,0.25);
         }
 
-        textarea {
-            min-height: 140px;
-            resize: vertical;
-        }
+        textarea { min-height:140px; resize:vertical; }
 
         .add-lawyer-row {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-            flex-wrap: wrap;
+            display:flex;
+            gap:1rem;
+            margin-top:1rem;
+            flex-wrap:wrap;
         }
 
-        .add-lawyer-row input {
-            flex: 1;
-            min-width: 200px;
-        }
+        .add-lawyer-row input { flex:1; min-width:200px; }
 
         button {
-            background: var(--cri-red);
-            color: white;
-            border: none;
-            padding: 0.9rem 1.8rem;
-            border-radius: 10px;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 500;
-            letter-spacing: 0.8px;
-            cursor: pointer;
-            transition: all 0.25s;
+            background:var(--cri-red);
+            color:white;
+            border:none;
+            padding:0.9rem 1.8rem;
+            border-radius:10px;
+            font-family:'Orbitron',sans-serif;
+            font-weight:500;
+            letter-spacing:0.8px;
+            cursor:pointer;
+            transition:all 0.25s;
         }
 
         button:hover:not(:disabled) {
-            background: var(--cri-red-dark);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(200,16,46,0.4);
+            background:var(--cri-red-dark);
+            transform:translateY(-1px);
+            box-shadow:0 6px 20px rgba(200,16,46,0.4);
         }
 
         button:disabled {
-            background: #4b5563;
-            cursor: not-allowed;
+            background:#4b5563;
+            cursor:not-allowed;
         }
 
-        .btn-secondary { background: #475569; }
-        .btn-secondary:hover { background: #64748b; }
-        .btn-danger { background: #dc2626; }
-        .btn-danger:hover { background: #b91c1c; }
+        .btn-secondary { background:#475569; }
+        .btn-secondary:hover { background:#64748b; }
+        .btn-danger { background:#dc2626; }
+        .btn-danger:hover { background:#b91c1c; }
 
         .preview {
-            background: #020617;
-            border: 1px solid #1e293b;
-            border-radius: 12px;
-            padding: 1.6rem;
-            font-family: 'Roboto Mono', monospace;
-            white-space: pre-wrap;
-            margin-top: 1.5rem;
-            min-height: 240px;
-            line-height: 1.5;
-            font-size: 0.96rem;
-            box-shadow: inset 0 0 25px rgba(0,0,0,0.6);
+            background:#020617;
+            border:1px solid #1e293b;
+            border-radius:12px;
+            padding:1.6rem;
+            font-family:'Roboto Mono',monospace;
+            white-space:pre-wrap;
+            margin-top:1.5rem;
+            min-height:240px;
+            line-height:1.5;
+            font-size:0.96rem;
+            box-shadow:inset 0 0 25px rgba(0,0,0,0.6);
         }
 
         small {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            margin-top: 0.35rem;
-            display: block;
+            color:var(--text-muted);
+            font-size:0.8rem;
+            margin-top:0.35rem;
+            display:block;
         }
 
-        .reati-search {
-            margin-bottom: 1rem;
-        }
+        .reati-search { margin-bottom:1rem; }
 
         .reati-container {
-            max-height: 360px;
-            overflow-y: auto;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 0.8rem;
-            background: rgba(15,23,42,0.6);
+            max-height:360px;
+            overflow-y:auto;
+            border:1px solid var(--border);
+            border-radius:10px;
+            padding:0.8rem;
+            background:rgba(15,23,42,0.6);
         }
 
         .reati-item {
-            display: flex;
-            align-items: center;
-            gap: 0.9rem;
-            padding: 0.6rem 0.9rem;
-            border-radius: 8px;
-            transition: all 0.2s;
+            display:flex;
+            align-items:center;
+            gap:0.9rem;
+            padding:0.6rem 0.9rem;
+            border-radius:8px;
+            transition:all 0.2s;
         }
 
-        .reati-item:hover {
-            background: rgba(200,16,46,0.12);
-        }
-
-        .reati-item.highlight {
-            background: rgba(200,16,46,0.25);
-        }
-
+        .reati-item:hover { background:rgba(200,16,46,0.12); }
+        .reati-item.highlight { background:rgba(200,16,46,0.25); }
         .reati-item.selected {
-            background: var(--selected-bg);
-            border-left: 3px solid var(--cri-red);
+            background:var(--selected-bg);
+            border-left:3px solid var(--cri-red);
         }
 
         .reati-item input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--cri-red);
-            cursor: pointer;
+            width:18px;
+            height:18px;
+            accent-color:var(--cri-red);
+            cursor:pointer;
         }
 
         .reati-item label {
-            cursor: pointer;
-            flex: 1;
-            white-space: normal;
-            word-break: break-word;
-            color: var(--text);
+            cursor:pointer;
+            flex:1;
+            white-space:normal;
+            word-break:break-word;
+            color:var(--text);
         }
 
         .clear-btn-container {
-            margin-top: 1.5rem;
-            text-align: right;
+            margin-top:1.5rem;
+            text-align:right;
         }
     </style>
 </head>
@@ -587,8 +548,29 @@ copiaCertBtn.onclick = () => {
 };
 
 // =============================================
-// AVVOCATI
+// AVVOCATI - Lista base fissa + possibilità di modifiche locali
 // =============================================
+
+const LISTA_BASE_AVVOCATI = [
+    { nome: "Giorgio Mastrota",          id: "194504958249402368" },   // Presidente
+    { nome: "Dario Alessi",               id: "443022881631371265" },   // Professori
+    { nome: "Rocco Casperino",            id: "378242725990105119" },
+    { nome: "Vincenzo DeCristian",        id: "993137444855750686" },
+    { nome: "Franco Moreno",              id: "397822572554878977" },
+    { nome: "Antonio Messina",            id: "728172756344111195" },
+    { nome: "Carmine Vallacchio",         id: "1209551814102483044" },  // Avvocati
+    { nome: "Andreas Santos",             id: "857905406118199337" },
+    { nome: "Saul Goodman",               id: "564446382258126848" },
+    { nome: "Luke Davinci",               id: "1143142379734450186" },
+    { nome: "Antonio Dossi",              id: "1079507436987236422" },
+    { nome: "Nasim Guled",                id: "1197903952155529238" },  // Praticanti
+    { nome: "Ettore Meravigliao",         id: "688348410600095772" },
+    { nome: "Salvatore Leone",            id: "1293175214657765420" },
+    { nome: "Giovanni Thora",             id: "754623679786123296" },
+    { nome: "Filippo Pallebasse",         id: "933364152066519111" },
+    { nome: "Bernardo Robaldo",           id: "776427517569400853" }
+];
+
 const avvocatiSelect = document.getElementById('avvocatoAtt');
 const alboTextarea = document.getElementById('alboText');
 
@@ -613,9 +595,29 @@ function parseAvvocatiFromText(text) {
 }
 
 function loadAvvocati() {
+    let list = [];
+
     const saved = localStorage.getItem('cri_avvocati');
-    const list = saved ? JSON.parse(saved) : [];
+    
+    if (saved) {
+        try {
+            list = JSON.parse(saved);
+        } catch (e) {
+            console.warn("Lista salvata corrotta → ripristino base");
+        }
+    }
+
+    // Se non c'è nulla di salvato oppure la lista è vuota → usiamo la base fissa
+    if (!list || list.length === 0) {
+        list = [...LISTA_BASE_AVVOCATI];
+        localStorage.setItem('cri_avvocati', JSON.stringify(list));
+    }
+
     avvocatiSelect.innerHTML = '<option value="">Seleziona avvocato...</option>';
+    
+    // Ordiniamo per nome per maggiore leggibilità
+    list.sort((a, b) => a.nome.localeCompare(b.nome));
+    
     list.forEach(avv => {
         const opt = document.createElement('option');
         opt.value = `${avv.nome}|${avv.id}`;
@@ -631,47 +633,59 @@ function saveAvvocati(list) {
 
 document.getElementById('replaceAlboBtn').onclick = () => {
     const text = alboTextarea.value.trim();
-    if (!text) return alert('Incolla prima l\'albo!');
+    if (!text) return alert('Incolla prima l\'albo completo!');
+    
     const nuovi = parseAvvocatiFromText(text);
-    if (nuovi.length === 0) return alert('Nessun avvocato trovato');
-    if (confirm(`Sostituire con ${nuovi.length} avvocati?`)) {
+    if (nuovi.length === 0) return alert('Non sono stati trovati avvocati validi');
+    
+    if (confirm(`Sostituire la tua lista locale con ${nuovi.length} avvocati?`)) {
         saveAvvocati(nuovi);
+        alboTextarea.value = '';
+        alert('Lista locale aggiornata!');
     }
 };
 
 document.getElementById('parseAlboBtn').onclick = () => {
     const text = alboTextarea.value.trim();
     if (!text) return alert('Incolla qualcosa prima!');
+    
     const nuovi = parseAvvocatiFromText(text);
-    if (nuovi.length === 0) return alert('Nessun avvocato trovato');
+    if (nuovi.length === 0) return alert('Non sono stati trovati avvocati validi');
+    
     const current = JSON.parse(localStorage.getItem('cri_avvocati') || '[]');
     const map = new Map(current.map(a => [`${a.nome}|${a.id}`, a]));
+    
     nuovi.forEach(n => map.set(`${n.nome}|${n.id}`, n));
+    
     saveAvvocati(Array.from(map.values()));
+    alboTextarea.value = '';
+    alert('Avvocati aggiunti alla tua lista locale!');
 };
 
 document.getElementById('clearAlboBtn').onclick = () => {
-    if (confirm('Svuotare completamente la lista avvocati?')) {
+    if (confirm('Vuoi svuotare la tua lista locale?\nAl prossimo refresh tornerà la lista base')) {
         localStorage.removeItem('cri_avvocati');
         loadAvvocati();
+        alert('Lista locale svuotata – ricaricata la versione base');
     }
 };
 
 document.getElementById('addAvvocatoBtn').onclick = () => {
     const nome = document.getElementById('newAvvocatoNome').value.trim();
     const id = document.getElementById('newAvvocatoId').value.trim();
-    if (nome && id && /^\d+$/.test(id)) {
-        const current = JSON.parse(localStorage.getItem('cri_avvocati') || '[]');
-        current.push({ nome, id });
-        saveAvvocati(current);
-        document.getElementById('newAvvocatoNome').value = '';
-        document.getElementById('newAvvocatoId').value = '';
-    } else {
-        alert('Inserisci nome e ID Discord valido');
+    
+    if (!nome || !id || !/^\d{17,20}$/.test(id)) {
+        return alert('Inserisci nome completo e ID Discord valido (17-20 cifre)');
     }
+    
+    const current = JSON.parse(localStorage.getItem('cri_avvocati') || '[]');
+    current.push({ nome, id });
+    saveAvvocati(current);
+    
+    document.getElementById('newAvvocatoNome').value = '';
+    document.getElementById('newAvvocatoId').value = '';
+    alert('Avvocato aggiunto alla tua lista locale!');
 };
-
-loadAvvocati();
 
 // =============================================
 // REATI
@@ -874,23 +888,18 @@ document.getElementById('clearCertBtn')?.addEventListener('click', () => {
 document.getElementById('clearAttBtn')?.addEventListener('click', () => {
     if (!confirm('Vuoi davvero svuotare tutti i campi attitudinali?\n(L\'ID Discord e la lista avvocati rimangono)')) return;
 
-    // Campi testo e date
     document.getElementById('nomeAtt').value = '';
     document.getElementById('cognomeAtt').value = '';
     document.getElementById('dataNascitaAtt').value = '';
     document.getElementById('telefonoAtt').value = '';
     document.getElementById('motivazioneReato').value = '';
 
-    // Deseleziona checkbox + rimuove classe visuale selected
     document.querySelectorAll('#reatiContainer .reati-item').forEach(item => {
         const checkbox = item.querySelector('input[type="checkbox"]');
-        if (checkbox) {
-            checkbox.checked = false;
-        }
+        if (checkbox) checkbox.checked = false;
         item.classList.remove('selected');
     });
 
-    // Deseleziona avvocato
     document.getElementById('avvocatoAtt').value = '';
 
     updatePreviewAtt();
@@ -903,6 +912,7 @@ document.querySelectorAll('#attitudinali input:not(#searchReati), #attitudinali 
 });
 
 // Inizializzazione
+loadAvvocati();
 updatePreviewAtt();
 updatePreviewCert();
 </script>
