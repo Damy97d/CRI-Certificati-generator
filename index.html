@@ -198,6 +198,31 @@
             box-shadow:inset 0 0 25px rgba(0,0,0,0.6);
         }
 
+        .warning-box {
+            margin: 1.2rem 0;
+            padding: 1rem 1.2rem;
+            background: rgba(220,38,38,0.18);
+            border: 1px solid #dc2626;
+            border-radius: 10px;
+            color: #fecaca;
+            font-size: 0.94rem;
+            line-height: 1.45;
+        }
+
+        .warning-box strong {
+            color: #fca5a5;
+        }
+
+        .warning-box ul {
+            margin: 0.5rem 0 0 1.4rem;
+            padding-left: 0;
+            list-style-type: disc;
+        }
+
+        .warning-box li {
+            margin-bottom: 0.35rem;
+        }
+
         small {
             color:var(--text-muted);
             font-size:0.8rem;
@@ -275,6 +300,16 @@
 
     <!-- CERTIFICATI -->
     <div id="certificati" class="page active">
+
+        <div class="card" style="margin-bottom: 2rem; background: rgba(200,16,46,0.08); border-color: var(--cri-red);">
+            <h3 style="color: var(--cri-red);">Impostazioni Operatore (salvate automaticamente)</h3>
+            <div class="form-group">
+                <label>Nome Medico per Firma (es. Dott. Stark)</label>
+                <input type="text" id="nomeMedicoFirma" placeholder="Dott. Cognome" />
+                <small>Usato nella firma del modello fattura/ricevuta</small>
+            </div>
+        </div>
+
         <div class="card">
             <div class="form-group">
                 <label>Nome</label>
@@ -332,12 +367,36 @@
         <div class="card">
             <h3>Anteprima Certificato</h3>
             <div class="preview" id="previewCert"></div>
-            <button id="copiaCertBtn" disabled>Copia negli Appunti</button>
+
+            <div id="warningCert" class="warning-box" style="display:none;">
+                <strong>Attenzione:</strong> Mancano alcuni dati obbligatori:
+                <ul id="warningListCert"></ul>
+            </div>
+            
+            <div style="margin-top: 1rem; display: flex; gap: 1rem; flex-wrap: wrap; justify-content: flex-start;">
+                <button id="copiaCertBtn">Copia negli Appunti</button>
+                <button id="generaFatturaCertBtn" disabled>Mostra Modello Fattura</button>
+            </div>
+
+            <div id="fatturaCardCert" style="display: none; margin-top: 1.5rem;">
+                <h4 style="margin-bottom: 0.8rem; color: var(--cri-red);">Modello Fattura / Ricevuta</h4>
+                <div class="preview" id="previewFatturaCert" style="min-height: 220px; font-size: 0.94rem; line-height: 1.45;"></div>
+            </div>
         </div>
     </div>
 
     <!-- ATTITUDINALI -->
     <div id="attitudinali" class="page">
+
+        <div class="card" style="margin-bottom: 2rem; background: rgba(200,16,46,0.08); border-color: var(--cri-red);">
+            <h3 style="color: var(--cri-red);">Impostazioni Operatore (salvate automaticamente)</h3>
+            <div class="form-group">
+                <label>Nome Medico per Firma (es. Dott. Stark)</label>
+                <input type="text" id="nomeMedicoFirmaAtt" placeholder="Dott. Cognome" />
+                <small>Usato nella firma del modello fattura/ricevuta</small>
+            </div>
+        </div>
+
         <div class="card">
             <h3>Gestione Avvocati</h3>
             <div class="form-group">
@@ -411,7 +470,21 @@
         <div class="card">
             <h3>Anteprima Messaggio</h3>
             <div class="preview" id="previewAtt"></div>
-            <button id="copiaAttBtn" disabled>Copia negli Appunti</button>
+
+            <div id="warningAtt" class="warning-box" style="display:none;">
+                <strong>Attenzione:</strong> Mancano alcuni dati obbligatori:
+                <ul id="warningListAtt"></ul>
+            </div>
+            
+            <div style="margin-top: 1rem; display: flex; gap: 1rem; flex-wrap: wrap; justify-content: flex-start;">
+                <button id="copiaAttBtn">Copia negli Appunti</button>
+                <button id="generaFatturaAttBtn" disabled>Mostra Modello Fattura</button>
+            </div>
+
+            <div id="fatturaCardAtt" style="display: none; margin-top: 1.5rem;">
+                <h4 style="margin-bottom: 0.8rem; color: var(--cri-red);">Modello Fattura / Ricevuta</h4>
+                <div class="preview" id="previewFatturaAtt" style="min-height: 220px; font-size: 0.94rem; line-height: 1.45;"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -438,8 +511,8 @@ const idInputAtt = document.getElementById('mioDiscordIdAtt');
 function loadId() {
     const saved = localStorage.getItem('cri_operator_discord_id');
     if (saved) {
-        if (idInputCert) idInputCert.value = saved;
-        if (idInputAtt) idInputAtt.value = saved;
+        idInputCert.value = saved;
+        idInputAtt.value = saved;
     }
 }
 
@@ -452,6 +525,36 @@ function saveId() {
 
 [idInputCert, idInputAtt].forEach(inp => inp?.addEventListener('input', saveId));
 loadId();
+
+// =============================================
+// Nome Medico per Firma - condiviso
+// =============================================
+const nomeMedicoCert = document.getElementById('nomeMedicoFirma');
+const nomeMedicoAtt  = document.getElementById('nomeMedicoFirmaAtt');
+
+function loadNomeMedico() {
+    const saved = localStorage.getItem('cri_nome_medico_firma');
+    if (saved) {
+        if (nomeMedicoCert) nomeMedicoCert.value = saved;
+        if (nomeMedicoAtt)  nomeMedicoAtt.value  = saved;
+    }
+}
+
+function saveNomeMedico() {
+    const val = (nomeMedicoCert?.value || nomeMedicoAtt?.value || '').trim();
+    if (val) {
+        localStorage.setItem('cri_nome_medico_firma', val);
+    } else {
+        localStorage.removeItem('cri_nome_medico_firma');
+    }
+    updatePreviewCert();
+    updatePreviewAtt();
+}
+
+[nomeMedicoCert, nomeMedicoAtt].forEach(inp => {
+    inp?.addEventListener('input', saveNomeMedico);
+});
+loadNomeMedico();
 
 // =============================================
 // CERTIFICATI
@@ -484,10 +587,11 @@ certInputs.motivazione.addEventListener('change', () => {
 
 document.querySelectorAll('#certificati input, #certificati select').forEach(el => {
     el.addEventListener('input', updatePreviewCert);
+    el.addEventListener('change', updatePreviewCert);
 });
 
 function formatData(dateStr) {
-    if (!dateStr) return '[gg/mm/aaaa]';
+    if (!dateStr) return '';
     const [y, m, d] = dateStr.split('-');
     return `${d}/${m}/${y}`;
 }
@@ -495,14 +599,14 @@ function formatData(dateStr) {
 function formatDataTiro() {
     const d = certInputs.dataTiroDate.value;
     const t = certInputs.dataTiroTime.value;
-    if (!d || !t) return '[gg/mm/aaaa hh:mm]';
+    if (!d || !t) return '';
     return formatData(d) + ' ' + t;
 }
 
 function updatePreviewCert() {
     const nome = certInputs.nome.value.trim() || '[NOME]';
     const cognome = certInputs.cognome.value.trim() || '[COGNOME]';
-    const dataN = formatData(certInputs.dataNascita.value);
+    const dataN = formatData(certInputs.dataNascita.value) || '[gg/mm/aaaa]';
     const tel = certInputs.telefono.value.trim() || '[numero]';
     const motVal = certInputs.motivazione.value;
 
@@ -530,7 +634,7 @@ function updatePreviewCert() {
 > Note: //`;
 
     if (motVal === '1') {
-        testo += `\n> Data Richiesta Licenza: ${formatDataTiro()}`;
+        testo += `\n> Data Richiesta Licenza: ${formatDataTiro() || '[gg/mm/aaaa hh:mm]'}`;
     }
 
     testo += `
@@ -538,41 +642,153 @@ function updatePreviewCert() {
 > Data e Firma dell’Operatore: ${oggi} ${firma}`;
 
     previewCert.textContent = testo;
-    copiaCertBtn.disabled = !motVal || (motVal === '1' && (!certInputs.dataTiroDate.value || !certInputs.dataTiroTime.value));
+
+    // --- AVVISO VISIBILE ---
+    const warningBoxCert = document.getElementById('warningCert');
+    const warningListCert = document.getElementById('warningListCert');
+    const certErrors = [];
+
+    if (!certInputs.nome.value.trim()) certErrors.push('Nome');
+    if (!certInputs.cognome.value.trim()) certErrors.push('Cognome');
+    if (!certInputs.dataNascita.value) certErrors.push('Data di nascita');
+    if (!certInputs.telefono.value.trim()) certErrors.push('Numero di telefono');
+    if (!certInputs.motivazione.value) certErrors.push('Motivazione della richiesta');
+
+    if (certInputs.motivazione.value === '1') {
+        if (!certInputs.dataTiroDate.value) certErrors.push('Data del Tiro di prova');
+        if (!certInputs.dataTiroTime.value) certErrors.push('Ora del Tiro di prova');
+    }
+
+    if (certErrors.length > 0) {
+        warningListCert.innerHTML = certErrors.map(err => `<li>${err}</li>`).join('');
+        warningBoxCert.style.display = 'block';
+    } else {
+        warningBoxCert.style.display = 'none';
+    }
 }
 
 copiaCertBtn.onclick = () => {
+    const errors = [];
+
+    if (!certInputs.nome.value.trim()) errors.push('Nome');
+    if (!certInputs.cognome.value.trim()) errors.push('Cognome');
+    if (!certInputs.dataNascita.value) errors.push('Data di nascita');
+    if (!certInputs.telefono.value.trim()) errors.push('Numero di telefono');
+    if (!certInputs.motivazione.value) errors.push('Motivazione della richiesta');
+    if (certInputs.motivazione.value === '1') {
+        if (!certInputs.dataTiroDate.value) errors.push('Data del Tiro di prova');
+        if (!certInputs.dataTiroTime.value) errors.push('Ora del Tiro di prova');
+    }
+
+    if (errors.length > 0) {
+        alert('Compila i seguenti campi obbligatori:\n- ' + errors.join('\n- '));
+        return;
+    }
+
     navigator.clipboard.writeText(previewCert.textContent)
         .then(() => alert('Copiato!'))
         .catch(() => alert('Errore durante la copia'));
 };
 
 // =============================================
-// AVVOCATI - Lista base fissa + possibilità di modifiche locali
+// MODELLO FATTURA - CERTIFICATI
 // =============================================
+const generaFatturaCertBtn = document.getElementById('generaFatturaCertBtn');
+const previewFatturaCert   = document.getElementById('previewFatturaCert');
+const fatturaCardCert      = document.getElementById('fatturaCardCert');
 
-const LISTA_BASE_AVVOCATI = [
-    { nome: "Giorgio Mastrota",          id: "194504958249402368" },   // Presidente
-    { nome: "Dario Alessi",               id: "443022881631371265" },   // Professori
-    { nome: "Rocco Casperino",            id: "378242725990105119" },
-    { nome: "Vincenzo DeCristian",        id: "993137444855750686" },
-    { nome: "Franco Moreno",              id: "397822572554878977" },
-    { nome: "Antonio Messina",            id: "728172756344111195" },
-    { nome: "Carmine Vallacchio",         id: "1209551814102483044" },  // Avvocati
-    { nome: "Andreas Santos",             id: "857905406118199337" },
-    { nome: "Saul Goodman",               id: "564446382258126848" },
-    { nome: "Luke Davinci",               id: "1143142379734450186" },
-    { nome: "Antonio Dossi",              id: "1079507436987236422" },
-    { nome: "Nasim Guled",                id: "1197903952155529238" },  // Praticanti
-    { nome: "Ettore Meravigliao",         id: "688348410600095772" },
-    { nome: "Salvatore Leone",            id: "1293175214657765420" },
-    { nome: "Giovanni Thora",             id: "754623679786123296" },
-    { nome: "Filippo Pallebasse",         id: "933364152066519111" },
-    { nome: "Bernardo Robaldo",           id: "776427517569400853" }
-];
+function updateFatturaCertBtn() {
+    generaFatturaCertBtn.disabled = !certInputs.motivazione.value;
+}
 
+certInputs.motivazione.addEventListener('change', updateFatturaCertBtn);
+document.querySelectorAll('#certificati input, #certificati select').forEach(el => {
+    el.addEventListener('input', updateFatturaCertBtn);
+    el.addEventListener('change', updateFatturaCertBtn);
+});
+updateFatturaCertBtn();
+
+generaFatturaCertBtn.onclick = () => {
+    const motVal = certInputs.motivazione.value;
+    if (!motVal) return;
+
+    const nome = certInputs.nome.value.trim() || 'NOME';
+    const cognome = certInputs.cognome.value.trim() || 'COGNOME';
+    const dataN = formatData(certInputs.dataNascita.value) || 'GG/MM/AAAA';
+
+    const nomeMedico = localStorage.getItem('cri_nome_medico_firma') || `Dott. ${cognome}`;
+
+    let testo = '';
+
+    if (['2','3','4'].includes(motVal)) {
+        testo = `🪪 Nome Cognome: ${nome} ${cognome}
+📅 Data di nascita: ${dataN}
+💊 Categoria Prodotto: Certificati medici o altro
+📒 Tipologia: (Mettere la spunta ai seguenti)
+
+* Prelievo Ematico
+
+🔢Quantità: Lasciare vuoto
+💶 Importo €: €1.000
+✒️ Firma del Medico: ${nomeMedico}`;
+    } else if (motVal === '1') {
+        testo = `🪪 Nome Cognome: ${nome} ${cognome}
+📅 Data di nascita: ${dataN}
+💊 Categoria Prodotto: Certificati medici o altro
+📒 Tipologia: (Mettere la spunta ai seguenti)
+
+* Prelievo Ematico
+
+* Certificato Anamnestico
+
+🔢Quantità: Lasciare vuoto
+💶 Importo €: €8.000
+✒️ Firma del Medico: ${nomeMedico}`;
+    } else if (['5','6'].includes(motVal)) {
+        testo = `🪪 Nome Cognome: ${nome} ${cognome}
+📅 Data di nascita: ${dataN}
+💊 Categoria Prodotto: Certificati medici o altro
+📒 Tipologia: (Mettere la spunta ai seguenti)
+
+* Prelievo Ematico
+
+* C. Anamnestico (Idoneità Lavorativa)
+
+🔢Quantità: Lasciare vuoto
+💶 Importo €: €8.000
+✒️ Firma del Medico: ${nomeMedico}`;
+    }
+
+    previewFatturaCert.textContent = testo;
+    fatturaCardCert.style.display = 'block';
+    fatturaCardCert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+};
+
+// =============================================
+// AVVOCATI (parte invariata)
+// =============================================
 const avvocatiSelect = document.getElementById('avvocatoAtt');
 const alboTextarea = document.getElementById('alboText');
+
+const LISTA_BASE_AVVOCATI = [
+    { nome: "Giorgio Mastrota", id: "194504958249402368" },
+    { nome: "Dario Alessi", id: "443022881631371265" },
+    { nome: "Rocco Casperino", id: "378242725990105119" },
+    { nome: "Vincenzo DeCristian", id: "993137444855750686" },
+    { nome: "Franco Moreno", id: "397822572554878977" },
+    { nome: "Antonio Messina", id: "728172756344111195" },
+    { nome: "Carmine Vallacchio", id: "1209551814102483044" },
+    { nome: "Andreas Santos", id: "857905406118199337" },
+    { nome: "Saul Goodman", id: "564446382258126848" },
+    { nome: "Luke Davinci", id: "1143142379734450186" },
+    { nome: "Antonio Dossi", id: "1079507436987236422" },
+    { nome: "Nasim Guled", id: "1197903952155529238" },
+    { nome: "Ettore Meravigliao", id: "688348410600095772" },
+    { nome: "Salvatore Leone", id: "1293175214657765420" },
+    { nome: "Giovanni Thora", id: "754623679786123296" },
+    { nome: "Filippo Pallebasse", id: "933364152066519111" },
+    { nome: "Bernardo Robaldo", id: "776427517569400853" }
+];
 
 function parseAvvocatiFromText(text) {
     const avvocati = [];
@@ -595,29 +811,15 @@ function parseAvvocatiFromText(text) {
 }
 
 function loadAvvocati() {
-    let list = [];
+    let list = JSON.parse(localStorage.getItem('cri_avvocati') || '[]');
 
-    const saved = localStorage.getItem('cri_avvocati');
-    
-    if (saved) {
-        try {
-            list = JSON.parse(saved);
-        } catch (e) {
-            console.warn("Lista salvata corrotta → ripristino base");
-        }
-    }
-
-    // Se non c'è nulla di salvato oppure la lista è vuota → usiamo la base fissa
-    if (!list || list.length === 0) {
+    if (list.length === 0) {
         list = [...LISTA_BASE_AVVOCATI];
         localStorage.setItem('cri_avvocati', JSON.stringify(list));
     }
 
     avvocatiSelect.innerHTML = '<option value="">Seleziona avvocato...</option>';
-    
-    // Ordiniamo per nome per maggiore leggibilità
     list.sort((a, b) => a.nome.localeCompare(b.nome));
-    
     list.forEach(avv => {
         const opt = document.createElement('option');
         opt.value = `${avv.nome}|${avv.id}`;
@@ -634,58 +836,47 @@ function saveAvvocati(list) {
 document.getElementById('replaceAlboBtn').onclick = () => {
     const text = alboTextarea.value.trim();
     if (!text) return alert('Incolla prima l\'albo completo!');
-    
     const nuovi = parseAvvocatiFromText(text);
     if (nuovi.length === 0) return alert('Non sono stati trovati avvocati validi');
-    
-    if (confirm(`Sostituire la tua lista locale con ${nuovi.length} avvocati?`)) {
+    if (confirm(`Sostituire la lista con ${nuovi.length} avvocati?`)) {
         saveAvvocati(nuovi);
         alboTextarea.value = '';
-        alert('Lista locale aggiornata!');
     }
 };
 
 document.getElementById('parseAlboBtn').onclick = () => {
     const text = alboTextarea.value.trim();
     if (!text) return alert('Incolla qualcosa prima!');
-    
     const nuovi = parseAvvocatiFromText(text);
     if (nuovi.length === 0) return alert('Non sono stati trovati avvocati validi');
-    
     const current = JSON.parse(localStorage.getItem('cri_avvocati') || '[]');
     const map = new Map(current.map(a => [`${a.nome}|${a.id}`, a]));
-    
     nuovi.forEach(n => map.set(`${n.nome}|${n.id}`, n));
-    
     saveAvvocati(Array.from(map.values()));
     alboTextarea.value = '';
-    alert('Avvocati aggiunti alla tua lista locale!');
 };
 
 document.getElementById('clearAlboBtn').onclick = () => {
-    if (confirm('Vuoi svuotare la tua lista locale?\nAl prossimo refresh tornerà la lista base')) {
+    if (confirm('Svuotare la lista avvocati?\nAl refresh tornerà la lista base.')) {
         localStorage.removeItem('cri_avvocati');
         loadAvvocati();
-        alert('Lista locale svuotata – ricaricata la versione base');
     }
 };
 
 document.getElementById('addAvvocatoBtn').onclick = () => {
     const nome = document.getElementById('newAvvocatoNome').value.trim();
     const id = document.getElementById('newAvvocatoId').value.trim();
-    
     if (!nome || !id || !/^\d{17,20}$/.test(id)) {
-        return alert('Inserisci nome completo e ID Discord valido (17-20 cifre)');
+        return alert('Inserisci nome e ID Discord valido (17-20 cifre)');
     }
-    
     const current = JSON.parse(localStorage.getItem('cri_avvocati') || '[]');
     current.push({ nome, id });
     saveAvvocati(current);
-    
     document.getElementById('newAvvocatoNome').value = '';
     document.getElementById('newAvvocatoId').value = '';
-    alert('Avvocato aggiunto alla tua lista locale!');
 };
+
+loadAvvocati();
 
 // =============================================
 // REATI
@@ -807,7 +998,7 @@ searchReati.addEventListener('input', () => renderReati(searchReati.value));
 renderReati();
 
 // =============================================
-// ATTITUDINALI PREVIEW
+// ATTITUDINALI PREVIEW + AVVISO
 // =============================================
 const attInputs = {
     nome: document.getElementById('nomeAtt'),
@@ -823,20 +1014,22 @@ const copiaAttBtn = document.getElementById('copiaAttBtn');
 function updatePreviewAtt() {
     const nome = attInputs.nome.value.trim() || '[NOME]';
     const cognome = attInputs.cognome.value.trim() || '[COGNOME]';
-    const dataN = formatData(attInputs.dataNascita.value);
+    const dataN = formatData(attInputs.dataNascita.value) || '[gg/mm/aaaa]';
     const tel = attInputs.telefono.value.trim() || '[numero]';
 
     const selected = Array.from(reatiContainer.querySelectorAll('input:checked'))
         .map(cb => `> - ${cb.value}`);
 
-    const reatiText = selected.length ? selected.join('\n') : '[nessun reato selezionato]';
+    const reatiText = selected.length ? selected.join('\n') : '> [nessun reato selezionato]';
 
     const motivazione = attInputs.motivazioneReato.value.trim() || '[motivazione]';
 
     const avvVal = document.getElementById('avvocatoAtt').value;
-    const avvocatoText = avvVal 
-        ? avvVal.split('|')[0].trim() + ' / <@' + avvVal.split('|')[1].trim() + '>'
-        : '[seleziona avvocato]';
+    let avvocatoText = '[seleziona avvocato]';
+    if (avvVal) {
+        const [nomeAvv, idAvv] = avvVal.split('|');
+        avvocatoText = `${nomeAvv.trim()} / <@${idAvv.trim()}>`;
+    }
 
     const id = idInputAtt.value.trim();
     const firma = id ? `<@${id}>` : '[TUO ID]';
@@ -856,13 +1049,96 @@ ${reatiText}
 
     previewAtt.textContent = testo;
 
-    copiaAttBtn.disabled = !(nome && cognome && selected.length > 0 && avvVal);
+    // --- AVVISO VISIBILE ---
+    const warningBoxAtt = document.getElementById('warningAtt');
+    const warningListAtt = document.getElementById('warningListAtt');
+    const attErrors = [];
+
+    if (!attInputs.nome.value.trim()) attErrors.push('Nome');
+    if (!attInputs.cognome.value.trim()) attErrors.push('Cognome');
+    if (!attInputs.dataNascita.value) attErrors.push('Data di nascita');
+    if (!attInputs.telefono.value.trim()) attErrors.push('Numero di cellulare');
+    if (reatiContainer.querySelectorAll('input:checked').length === 0) attErrors.push('Almeno un reato selezionato');
+    if (!document.getElementById('avvocatoAtt').value) attErrors.push('Avvocato Difensore');
+
+    if (attErrors.length > 0) {
+        warningListAtt.innerHTML = attErrors.map(err => `<li>${err}</li>`).join('');
+        warningBoxAtt.style.display = 'block';
+    } else {
+        warningBoxAtt.style.display = 'none';
+    }
 }
 
 copiaAttBtn.onclick = () => {
+    const errors = [];
+
+    if (!attInputs.nome.value.trim()) errors.push('Nome');
+    if (!attInputs.cognome.value.trim()) errors.push('Cognome');
+    if (!attInputs.dataNascita.value) errors.push('Data di nascita');
+    if (!attInputs.telefono.value.trim()) errors.push('Numero di cellulare');
+    if (reatiContainer.querySelectorAll('input:checked').length === 0) errors.push('Almeno un reato selezionato');
+    if (!document.getElementById('avvocatoAtt').value) errors.push('Avvocato Difensore');
+
+    if (errors.length > 0) {
+        alert('Compila i seguenti campi obbligatori:\n- ' + errors.join('\n- '));
+        return;
+    }
+
     navigator.clipboard.writeText(previewAtt.textContent)
         .then(() => alert('Copiato!'))
         .catch(() => alert('Errore durante la copia'));
+};
+
+// =============================================
+// MODELLO FATTURA - ATTITUDINALI
+// =============================================
+const generaFatturaAttBtn = document.getElementById('generaFatturaAttBtn');
+const previewFatturaAtt   = document.getElementById('previewFatturaAtt');
+const fatturaCardAtt      = document.getElementById('fatturaCardAtt');
+
+function updateFatturaAttBtn() {
+    const nome = attInputs.nome.value.trim();
+    const cognome = attInputs.cognome.value.trim();
+    const dataNascita = attInputs.dataNascita.value;
+    generaFatturaAttBtn.disabled = !(nome && cognome && dataNascita);
+}
+
+document.querySelectorAll('#attitudinali input:not(#searchReati), #attitudinali select').forEach(el => {
+    el.addEventListener('input', () => {
+        updatePreviewAtt();
+        updateFatturaAttBtn();
+    });
+    el.addEventListener('change', () => {
+        updatePreviewAtt();
+        updateFatturaAttBtn();
+    });
+});
+
+updateFatturaAttBtn();
+
+generaFatturaAttBtn.onclick = () => {
+    const nome = attInputs.nome.value.trim() || 'NOME';
+    const cognome = attInputs.cognome.value.trim() || 'COGNOME';
+    const dataN = formatData(attInputs.dataNascita.value) || 'GG/MM/AAAA';
+
+    const nomeMedico = localStorage.getItem('cri_nome_medico_firma') || `Dott. ${cognome}`;
+
+    const testo = `🪪 Nome Cognome: ${nome} ${cognome}
+📅 Data di nascita: ${dataN}
+💊 Categoria Prodotto: Certificati medici o altro
+📒 Tipologia: (Mettere la spunta ai seguenti)
+
+* Prelievo Ematico
+
+* Test Attitudinale
+
+🔢Quantità: Lasciare vuoto
+💶 Importo €: €9.000
+✒️ Firma del Medico: ${nomeMedico}`;
+
+    previewFatturaAtt.textContent = testo;
+    fatturaCardAtt.style.display = 'block';
+    fatturaCardAtt.scrollIntoView({ behavior: 'smooth', block: 'center' });
 };
 
 // =============================================
@@ -870,7 +1146,7 @@ copiaAttBtn.onclick = () => {
 // =============================================
 
 document.getElementById('clearCertBtn')?.addEventListener('click', () => {
-    if (!confirm('Vuoi davvero svuotare tutti i campi dei certificati?\n(L\'ID Discord verrà mantenuto)')) return;
+    if (!confirm('Svuotare tutti i campi dei certificati?\n(L\'ID Discord e il nome medico rimangono)')) return;
 
     document.getElementById('nomeCert').value = '';
     document.getElementById('cognomeCert').value = '';
@@ -882,11 +1158,10 @@ document.getElementById('clearCertBtn')?.addEventListener('click', () => {
 
     tiroFieldCert.style.display = 'none';
     updatePreviewCert();
-    alert('Campi certificati svuotati!');
 });
 
 document.getElementById('clearAttBtn')?.addEventListener('click', () => {
-    if (!confirm('Vuoi davvero svuotare tutti i campi attitudinali?\n(L\'ID Discord e la lista avvocati rimangono)')) return;
+    if (!confirm('Svuotare tutti i campi attitudinali?\n(L\'ID Discord, nome medico e lista avvocati rimangono)')) return;
 
     document.getElementById('nomeAtt').value = '';
     document.getElementById('cognomeAtt').value = '';
@@ -894,27 +1169,17 @@ document.getElementById('clearAttBtn')?.addEventListener('click', () => {
     document.getElementById('telefonoAtt').value = '';
     document.getElementById('motivazioneReato').value = '';
 
-    document.querySelectorAll('#reatiContainer .reati-item').forEach(item => {
-        const checkbox = item.querySelector('input[type="checkbox"]');
-        if (checkbox) checkbox.checked = false;
-        item.classList.remove('selected');
-    });
+    document.querySelectorAll('#reatiContainer input[type="checkbox"]').forEach(cb => cb.checked = false);
+    document.querySelectorAll('.reati-item').forEach(item => item.classList.remove('selected'));
 
     document.getElementById('avvocatoAtt').value = '';
 
     updatePreviewAtt();
-    alert('Campi attitudinali svuotati!');
-});
-
-document.querySelectorAll('#attitudinali input:not(#searchReati), #attitudinali select').forEach(el => {
-    el.addEventListener('input', updatePreviewAtt);
-    el.addEventListener('change', updatePreviewAtt);
 });
 
 // Inizializzazione
-loadAvvocati();
-updatePreviewAtt();
 updatePreviewCert();
+updatePreviewAtt();
 </script>
 </body>
 </html>
